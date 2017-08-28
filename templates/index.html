@@ -1,0 +1,86 @@
+<script src="https://unpkg.com/vue"></script>
+
+<style>
+.me {
+    font-weight: bold;
+}
+</style>
+
+<div id="vuemod">
+    <div>
+        Name: <input v-model="name" v-on:keypress.enter="setname" v-on:blur="setname"/>
+    </form>
+    <div>
+        Message: <input v-model="message" v-on:keypress.enter="send"/>
+    </div>
+    <table>
+        <tr v-for="message in messages">
+            <td style="text-align: right" v-bind:class="{me: message.me}">
+                {{message.person}}
+            </td>
+            <td v-if="message">
+                <template v-if="message.action == 'join'">joined.</template>
+                <template v-if="message.action == 'rename'">is now {{message.name}}.</template>
+                <template v-if="message.action == 'say'">: {{message.message}}</template>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script>
+var nobody = "nobody " + Math.floor(Math.random()*9000+1000);
+var model = new Vue({
+    el: "#vuemod",
+    data: {
+        uuid: "",
+        name: nobody,
+        oldname: nobody,
+        send: function(e) {
+            obj = {"uuid": model.uuid, "action": "say", "message": model.message};
+            model.sock.send(JSON.stringify(obj));
+            model.message = "";
+        },
+        setname: function(e) {
+            if (model.name != model.oldname) {
+                obj = {"uuid": model.uuid, "name": model.name, "action": "rename"};
+                model.sock.send(JSON.stringify(obj));
+                model.oldname = model.name
+            }
+        },
+        message: "",
+        people: {},
+        messages: [],
+        sock: new WebSocket("ws://localhost:5000/talk"),
+    }
+})
+
+model.sock.onopen = function(e) {
+    obj = {"name": model.name, "action": "join"};
+    model.sock.send(JSON.stringify(obj));
+};
+model.sock.onmessage = function(e) {
+    var receive = JSON.parse(e.data);
+
+    if (receive.action == "who") {
+        model.people = receive.people;
+        model.uuid = receive.me;
+        return;
+    }
+
+    if (receive.action == "join") {
+        model.people[receive.uuid] = receive.name;
+    }
+
+    receive.person = model.people[receive.uuid];
+
+    if (receive.action == "rename") {
+        model.people[receive.uuid] = receive.name;
+    }
+
+    if (receive.uuid == model.uuid) {
+        receive.me = true;
+    }
+
+    model.messages.unshift(receive);
+};
+</script>
