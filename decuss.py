@@ -57,7 +57,12 @@ def talk_socket(ws):
                     raise BadMessage(message)
 
                 people[uuid] = recvdata["name"]
-                who = dict(action="who", me=uuid, people=people)
+
+                you = dict(action="you", assigned_uuid=uuid)
+                print("SENDING YOU", you)
+                ws.send(json.dumps(you))
+
+                who = dict(action="who", people=people)
                 print("SENDING WHO", who)
                 ws.send(json.dumps(who))
 
@@ -83,10 +88,16 @@ def talk_socket(ws):
 
     except WebSocketError:
         pass
-#    except BadMessage as e:
-#        print("Bad message: ", e.args)
+    except BadMessage as e:
+        if e.args[0] is not None:
+            print("Bad message: ", e.args[0])
     finally:
+        del listen_message
         ws.close()
+        del people[uuid]
+        leavedata = dict(uuid=uuid, action="leave")
+        print("SENDING", leavedata)
+        pub.sendMessage("message", message=json.dumps(leavedata))
 
 def parse(message):
     if message:
