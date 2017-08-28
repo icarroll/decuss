@@ -3,7 +3,10 @@ from flask_sockets import Sockets
 from geventwebsocket.exceptions import WebSocketError
 import json
 from pubsub import pub
-import _thread
+try:
+    import _thread
+except:
+    import thread as _thread
 import time
 from uuid import uuid4
 
