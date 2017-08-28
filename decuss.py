@@ -1,3 +1,8 @@
+# pip install flask
+# pip install flask_sockets
+# pip install pypubsub   #for python3
+# pip install pypubsub==3.3   #for python2
+
 from flask import Flask, render_template, request
 from flask_sockets import Sockets
 from geventwebsocket.exceptions import WebSocketError
