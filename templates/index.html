@@ -50,7 +50,7 @@ var model = new Vue({
         message: "",
         people: {},
         messages: [],
-        sock: new WebSocket("ws://localhost:5000/talk"),
+        sock: new WebSocket("ws://" + window.location.host + "/talk"),
     }
 })
 
