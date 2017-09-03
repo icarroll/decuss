@@ -21,7 +21,7 @@ div.who {
         </ul>
     </div>
     <div>
-        Name: <input v-model="name" v-on:keypress.enter="setname" v-on:blur="setname"/>
+        Name: <span class="me">{{name}}</span>
     </form>
     <div>
         Message: <input id="message" v-model="message" v-on:keypress.enter="send"/>
@@ -42,21 +42,12 @@ div.who {
 </div>
 
 <script>
-/*
-Vue.directive("focus", {
-    inserted: function(el) {
-        el.focus();
-    }
-})
-*/
-
-var nobody = "nobody " + Math.floor(Math.random()*9000+1000);
 var model = new Vue({
     el: "#vuemod",
     data: {
         uuid: "",
-        name: nobody,
-        oldname: nobody,
+        name: "",
+        oldname: "",
         send: function(e) {
             obj = {"uuid": model.uuid, "action": "say", "message": model.message};
             model.sock.send(JSON.stringify(obj));
@@ -71,15 +62,15 @@ var model = new Vue({
             document.getElementById("message").focus();
         },
         message: "",
-        people: {},
+        peoplehere: {},
         messages: [],
-        sock: new WebSocket("ws://" + window.location.host + "/talk"),
+        sock: new WebSocket("wss://" + window.location.host + "/chatsocket"),
     },
     computed: {
         who_list: function() {
           var who = [];
-          for (var key in this.people) {
-            who.push(this.people[key]);
+          for (var key in this.peoplehere) {
+            who.push(this.peoplehere[key]);
           }
           who.sort();
           return who;
@@ -88,34 +79,43 @@ var model = new Vue({
 })
 
 model.sock.onopen = function(e) {
-    obj = {"name": model.name, "action": "join"};
+    obj = {"token": localStorage.token, "action": "join"};
     model.sock.send(JSON.stringify(obj));
 };
 model.sock.onmessage = function(e) {
     var receive = JSON.parse(e.data);
 
+    if (receive.action == "authfail") {
+        window.location.href = "/authfail";
+    }
+
+    if (receive.action == "kick") {
+        window.location.href = "/kicked";
+    }
+
     if (receive.action == "you") {
         model.uuid = receive.assigned_uuid;
+        model.name = receive.name;
         return;
     }
 
     if (receive.action == "who") {
-        model.people = receive.people;
+        model.peoplehere = receive.peoplehere;
         return;
     }
 
     if (receive.action == "join") {
-        Vue.set(model.people, receive.uuid, receive.name);
+        Vue.set(model.peoplehere, receive.uuid, receive.name);
     }
 
-    receive.person = model.people[receive.uuid];
+    receive.person = model.peoplehere[receive.uuid];
 
     if (receive.action == "rename") {
-        Vue.set(model.people, receive.uuid, receive.name);
+        Vue.set(model.peoplehere, receive.uuid, receive.name);
     }
 
     if (receive.action == "leave") {
-        Vue.delete(model.people, receive.uuid);
+        Vue.delete(model.peoplehere, receive.uuid);
     }
 
     if (receive.uuid == model.uuid) {
@@ -125,3 +125,5 @@ model.sock.onmessage = function(e) {
     model.messages.unshift(receive);
 };
 </script>
+
+<!-- vi: set sw=2: -->
