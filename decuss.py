@@ -1,5 +1,6 @@
 # pip install flask
 # pip install flask_sockets
+# pip install gevent-websocket
 # pip install pypubsub   #for python3
 # pip install pypubsub==3.3   #for python2
 # pip install passlib
@@ -125,7 +126,7 @@ def dosignupin():
         abort(400)
 
     if valid:
-        webtoken = os.urandom(32).hex()
+        webtoken = str.join("", ("{:02x}".format(ord(b)) for b in os.urandom(32)))
         tokens[webtoken] = person
         return render_template("signed.html", token=webtoken)
     else:
