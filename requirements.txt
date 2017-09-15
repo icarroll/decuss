@@ -1,0 +1,8 @@
+flask
+flask_sockets
+gevent-websocket
+pypubsub   #for python3
+#pypubsub==3.3   #for python2
+passlib
+argon2_cffi
+typing

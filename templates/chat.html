@@ -1,17 +1,13 @@
-<script src="https://unpkg.com/vue"></script>
-
-<style>
-.me {
-    font-weight: bold;
-}
-
-div.who {
-    float: right;
-    clear: right;
-}
-</style>
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <link href="/static/main.css" rel="stylesheet">
+</head>
 
 <div id="vuemod">
+  <v-app>
+    <main>
+    <v-container>
     <div class="who">
         Who is here:
         <ul>
@@ -39,7 +35,13 @@ div.who {
             </td>
         </tr>
     </table>
+  </v-container>
+  </main>
+  </v-app>
 </div>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+ <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
 
 <script>
 var model = new Vue({
@@ -64,7 +66,7 @@ var model = new Vue({
         message: "",
         peoplehere: {},
         messages: [],
-        sock: new WebSocket("wss://" + window.location.host + "/chatsocket"),
+        sock: new WebSocket("ws://" + window.location.host + "/chatsocket"),
     },
     computed: {
         who_list: function() {

@@ -1,10 +1,4 @@
-# pip install flask
-# pip install flask_sockets
-# pip install gevent-websocket
-# pip install pypubsub   #for python3
-# pip install pypubsub==3.3   #for python2
-# pip install passlib
-# pip install argon2_cffi
+
 
 from flask import (Flask, render_template, request, redirect, url_for, flash,
                    session, g, abort)
@@ -42,6 +36,7 @@ class CustomFlask(Flask):
 
 app = CustomFlask(__name__)
 sockets = Sockets(app)
+#TODO:  check if file exists, create if not?
 app.secret_key = open("session-secret.txt", "rb").read()
 
 '''
@@ -56,6 +51,7 @@ CREATE TABLE users (
 DBFILE = "users.db"
 
 def get_db():
+    #TODO check for/generate db file
     db = getattr(g, "_database", None)
     if db is None:
         db = g._database = sqlite3.connect(DBFILE)
