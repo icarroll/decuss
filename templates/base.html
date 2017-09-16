@@ -1,0 +1,27 @@
+<head>
+    $( block head )
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <link href="/static/main.css" rel="stylesheet">
+    $( block extrahead ) $( endblock )
+    $( endblock )
+    
+</head>
+
+<body>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
+
+  <div id="vuemod">
+    <v-app>
+      <main>
+        <v-container>
+          $( block content ) $( endblock ) 
+        </v-container>
+      </main>
+    </v-app>
+  </div>
+  
+</body>
+
+$(block scripts) $(endblock)

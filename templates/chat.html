@@ -1,49 +1,6 @@
-<head>
-    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
-    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
-    <link href="/static/main.css" rel="stylesheet">
-</head>
+$( extends 'base.html')
 
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
-<script src="https://unpkg.com/vuetify/dist/vuetify.js"></script> 
-
-<div id="vuemod">
-  <v-app>
-    <main>
-    <v-container>
-    <div class="who">
-        Who is here:
-        <ul>
-            <li v-for="person in who_list">
-                {{person}}
-            </li>
-        </ul>
-    </div>
-    <div>
-        Name: <span class="me">{{name}}</span>
-    </form>
-    <div>
-        Message: <input id="message" v-model="message" v-on:keypress.enter="send"/>
-    </div>
-    <table>
-        <tr v-for="message in messages">
-            <td style="text-align: right" v-bind:class="{me: message.me}">
-                {{message.person}}
-            </td>
-            <td v-if="message">
-                <template v-if="message.action == 'join'">joined.</template>
-                <template v-if="message.action == 'rename'">is now {{message.name}}.</template>
-                <template v-if="message.action == 'say'">: {{message.message}}</template>
-                <template v-if="message.action == 'leave'">left.</template>
-            </td>
-        </tr>
-    </table>
-  </v-container>
-  </main>
-  </v-app>
-</div>
-
-
+$( block scripts)
 <script>
 var model = new Vue({
     el: "#vuemod",
@@ -128,5 +85,35 @@ model.sock.onmessage = function(e) {
     model.messages.unshift(receive);
 };
 </script>
+$(endblock)
 
+$(block content)
+    <div class="who">
+        Who is here:
+        <ul>
+            <li v-for="person in who_list">
+                {{person}}
+            </li>
+        </ul>
+    </div>
+    <div>
+        Name: <span class="me">{{name}}</span>
+    </form>
+    <div>
+        Message: <input id="message" v-model="message" v-on:keypress.enter="send"/>
+    </div>
+    <table>
+        <tr v-for="message in messages">
+            <td style="text-align: right" v-bind:class="{me: message.me}">
+                {{message.person}}
+            </td>
+            <td v-if="message">
+                <template v-if="message.action == 'join'">joined.</template>
+                <template v-if="message.action == 'rename'">is now {{message.name}}.</template>
+                <template v-if="message.action == 'say'">: {{message.message}}</template>
+                <template v-if="message.action == 'leave'">left.</template>
+            </td>
+        </tr>
+    </table>
+$(endblock)
 <!-- vi: set sw=2: -->

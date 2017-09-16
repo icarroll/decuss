@@ -1,18 +1,45 @@
-<script src="https://unpkg.com/vue"></script>
+$( extends 'base.html')
+
+$(block scripts)
 <script src="/md5.js"></script>
 <script src="/zxcvbn.js"></script>
+<script>
+var model = new Vue({
+  el: "#vuemod",
+  data: {
+    sign: "Sign in",
+    name: "",
+    password: "",
+    confirm: "",
+    email: "",
+  },
+  computed: {
+    signup: function() {
+      return this.sign == "Sign up";
+    },
+    avatarurl: function() {
+      return "https://www.gravatar.com/avatar/" + MD5(this.email) + "?s=40";
+    },
+    crack_time: function() {
+      return zxcvbn(this.password).crack_times_display.offline_slow_hashing_1e4_per_second;
+    },
+  }
+})
+</script>
+$(endblock)
 
-$(with messages = get_flashed_messages())
-  $(if messages)
-    <ul class=flashes>
-      $(for message in messages)
-      <li>${message}</li>
-      $(endfor)
-    </ul>
-  $(endif)
-$(endwith)
+$( block content)
 
-<div id="vuemod">
+    $(with messages = get_flashed_messages())
+      $(if messages)
+        <ul class=flashes>
+          $(for message in messages)
+          <li>${message}</li>
+          $(endfor)
+        </ul>
+      $(endif)
+    $(endwith)
+    
   <form action="/signed" method="POST">
     <input type="radio" id="signin" value="Sign in" v-model="sign"/>
     <label for="signin">Sign in</label>
@@ -38,31 +65,7 @@ $(endwith)
     <input v-show="signup" type="submit" name="action" value="Sign up" v-bind:disabled="password != confirm"/>
     <span v-show="signup && (password != confirm)">passwords don't match</span>
   </form>
+
 </div>
-
-<script>
-var model = new Vue({
-  el: "#vuemod",
-  data: {
-    sign: "Sign in",
-    name: "",
-    password: "",
-    confirm: "",
-    email: "",
-  },
-  computed: {
-    signup: function() {
-      return this.sign == "Sign up";
-    },
-    avatarurl: function() {
-      return "https://www.gravatar.com/avatar/" + MD5(this.email) + "?s=40";
-    },
-    crack_time: function() {
-      return zxcvbn(this.password).crack_times_display.offline_slow_hashing_1e4_per_second;
-    },
-  }
-})
-
-</script>
-
+$( endblock )
 <!-- vi: set sw=2: -->
