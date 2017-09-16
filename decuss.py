@@ -1,15 +1,18 @@
 
+import json
+import os
+import sqlite3
+import sys
+import random
+import string 
 
 from flask import (Flask, render_template, request, redirect, url_for, flash,
                    session, g, abort)
 from flask_sockets import Sockets
 from geventwebsocket.exceptions import WebSocketError
-import json
-import os
 from passlib.hash import argon2
-from pubsub import pub
-import sqlite3
-import sys
+from pubsub import pub 
+
 try:
     import _thread
 except:
@@ -122,7 +125,8 @@ def dosignupin():
         abort(400)
 
     if valid:
-        webtoken = str.join("", ("{:02x}".format(ord(b)) for b in os.urandom(32)))
+        # webtoken = str.join("", ("{:02x}".format(ord(b)) for b in os.urandom(32).decode()))
+        webtoken = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32))
         tokens[webtoken] = person
         return render_template("signed.html", token=webtoken)
     else:
@@ -252,5 +256,7 @@ def cert_thing():
 if __name__ == "__main__":
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
-    server = pywsgi.WSGIServer(('0.0.0.0', 443), app, handler_class=WebSocketHandler, keyfile="domain-key.txt", certfile="domain-crt.txt")
+    port = 443
+    server = pywsgi.WSGIServer(('0.0.0.0', port), app, handler_class=WebSocketHandler, keyfile="domain-key.txt", certfile="domain-crt.txt")
+    print("Server running on port", port)
     server.serve_forever()

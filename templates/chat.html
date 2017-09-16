@@ -4,6 +4,9 @@
     <link href="/static/main.css" rel="stylesheet">
 </head>
 
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vuetify/dist/vuetify.js"></script> 
+
 <div id="vuemod">
   <v-app>
     <main>
@@ -40,8 +43,6 @@
   </v-app>
 </div>
 
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
- <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
 
 <script>
 var model = new Vue({
@@ -66,7 +67,7 @@ var model = new Vue({
         message: "",
         peoplehere: {},
         messages: [],
-        sock: new WebSocket("ws://" + window.location.host + "/chatsocket"),
+        sock: new WebSocket("wss://" + window.location.host + "/chatsocket"),
     },
     computed: {
         who_list: function() {
