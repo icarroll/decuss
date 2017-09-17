@@ -28,6 +28,10 @@ var model = new Vue({
 </script>
 $(endblock)
 
+
+
+
+
 $( block content)
 
     $(with messages = get_flashed_messages())
@@ -40,30 +44,36 @@ $( block content)
       $(endif)
     $(endwith)
     
-  <form action="/signed" method="POST">
+  <v-form action="/signed" method="POST">
+    <!-- I had trouble getting the radio buttons to work as Veutified objects -->
     <input type="radio" id="signin" value="Sign in" v-model="sign"/>
     <label for="signin">Sign in</label>
     <input type="radio" id="signup" value="Sign up" v-model="sign"/>
     <label for="signup">Sign up</label>
-    <div>
-      Name: <input name="name" v-model="name"/>
-    </div>
-    <div>
-      Password: <input type="password" name="password" v-model="password"/>
-      <span v-show="signup">{{crack_time}} to crack</span>
-    </div>
-    <div v-show="signup">
-      Confirm password: <input type="password" v-model="confirm"/>
-    </div>
-    <div v-show="signup">
-      Optional email: <input name="email" v-model="email"/>
+    
+    
+    <v-layout row>
+      <v-flex xs4><v-subheader>Name: </v-subheader></v-flex><v-text-field name="name" v-model="name"/>
+    </v-layout>
+    <v-layout row>
+      <v-flex xs4><v-subheader>Password:  </v-subheader></v-flex><v-text-field name="password" v-model="password" type="password"/><span v-show="signup">{{crack_time}} to crack</span>
+    </v-layout>
+    <v-layout row v-show="signup">
+      <v-flex xs4><v-subheader>Confirm Password:  </v-subheader></v-flex><v-text-field v-model="confirm" type="password"/>
+    </v-layout>
+    <v-layout row v-show="signup">
+      <v-flex xs4><v-subheader>Optional email: </v-subheader></v-flex><v-text-field name="email" v-model="email"/> 
+      
+      <!-- Had no idea what you wanted when it came to the gravatar stuff -->
       <a href="https://gravatar.com">Gravatar</a>
       <input hidden=true name=avatarurl v-model="avatarurl"/>
-      <img v-bind:src="avatarurl"/>
-    </div>
-    <input v-show="! signup" type="submit" name="action" value="Sign in"/>
-    <input v-show="signup" type="submit" name="action" value="Sign up" v-bind:disabled="password != confirm"/>
+      <img v-bind:src="avatarurl"/>-->
+    
+    </v-layout>
+    <v-btn flat primary v-show="! signup" type="submit" name="action" value="Sign in">Sign In</v-btn>
+    <v-btn flat primary v-show="signup" type="submit" name="action" value="Sign up" v-bind:disabled="password != confirm">Sign Up</v-btn>
     <span v-show="signup && (password != confirm)">passwords don't match</span>
+
   </form>
 
 </div>

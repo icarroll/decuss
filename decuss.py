@@ -106,25 +106,43 @@ def dosignupin():
             valid = False
             invalidmessage = "invalid name or password"
     elif request.form["action"] == "Sign up":
+        print("Attempting signup")
         p = query_db(GETPERSON, args=dict(name=request.form["name"]), one=True)
+        print("Query finished")
         if p is not None:
             valid = False
             invalidmessage = "choose a different name"
         else:
+            print("Signup form valid")
             valid = True
             print(request.form)
             sys.stdout.flush()
-            person = dict(name=request.form["name"],
-                          uuid=str(uuid4()),
-                          passwordhash=argon2.hash(request.form["password"]),
-                          avatarurl=request.form["avatarurl"])
+            print("Picking name")
+            name = request.form["name"]
+            print("Picking uuid")
+            new_uuid=str(uuid4())
+            print("Picking hash")
+            passwordhash = argon2.hash(request.form["password"])
+            print("Picking avatar url")
+            #HACK.  Fix me.  
+            try:
+                aurl = request.form["avatarurl"]
+            except:
+                aurl = ""
+            person = dict(name=name,
+                          uuid=new_uuid,
+                          passwordhash=passwordhash,
+                          avatarurl=aurl)
+            print("Putting person in db")
             query_db(PUTPERSON, args=person)
             get_db().commit()
             del person["passwordhash"]
     else:
+        print("Baby did a bad bad thing")
         abort(400)
 
     if valid:
+        print("Totes valid, bro")
         # webtoken = str.join("", ("{:02x}".format(ord(b)) for b in os.urandom(32).decode()))
         webtoken = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32))
         tokens[webtoken] = person
