@@ -99,9 +99,12 @@ $(block content)
     <div>
         Name: <span class="me">{{name}}</span>
     </form>
-    <div>
-        Message: <input id="message" v-model="message" v-on:keypress.enter="send"/>
-    </div>
+
+    
+    <!-- Is there any particular reason to use a table as component of choice here, or
+      is it just ease of implimentation?  It seems like the Vue way to do this is with "cards"
+      in a scrollable widget https://vuetifyjs.com/components/cards -->
+    <v-container id="chatBox">
     <table>
         <tr v-for="message in messages">
             <td style="text-align: right" v-bind:class="{me: message.me}">
@@ -115,5 +118,12 @@ $(block content)
             </td>
         </tr>
     </table>
+    <!-- <div>
+        Message: <input id="message" v-model="message" v-on:keypress.enter="send"/>
+    </div>-->
+    <v-layout row class="messageEntry">
+      <v-flex xs4><v-subheader>Message: </v-subheader></v-flex><v-text-field id="message" name="name" v-model="message" v-on:keypress.enter="send"/>
+    </v-layout>
+  </v-container>
 $(endblock)
 <!-- vi: set sw=2: -->
